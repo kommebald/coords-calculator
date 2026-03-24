@@ -3,126 +3,81 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MC Converter | Animated</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;800&display=swap" rel="stylesheet">
+    <title>MC Converter | Secret Edition</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
     <style>
         :root {
-            --nether-color: #ff4d4d;
-            --overworld-color: #2ecc71;
-            --current-accent: var(--nether-color);
-            --bg-dark: #050505;
+            --nether: #ff4d4d;
+            --overworld: #2ecc71;
+            --accent: var(--nether);
+            --bg: #050505;
         }
 
         body {
-            margin: 0;
-            background: var(--bg-dark);
-            color: white;
-            font-family: 'Inter', sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            overflow: hidden;
-            transition: background 0.8s ease;
+            margin: 0; background: var(--bg); color: white;
+            font-family: 'Inter', sans-serif; height: 100vh;
+            display: flex; justify-content: center; align-items: center;
+            overflow: hidden; transition: 0.8s ease;
         }
 
-        /* Dynamischer Hintergrund-Glow */
         .glow {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            background: radial-gradient(circle at 50% 50%, var(--current-accent) 0%, transparent 70%);
-            z-index: -1;
-            opacity: 0.3;
-            transition: 0.8s ease;
+            position: absolute; width: 100%; height: 100%;
+            background: radial-gradient(circle at 50% 50%, var(--accent) 0%, transparent 70%);
+            z-index: -1; opacity: 0.25; transition: 0.8s;
         }
+
+        /* Secret Mode Button */
+        .secret-trigger {
+            position: absolute; top: 20px; right: 20px;
+            background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
+            color: #444; padding: 8px 15px; border-radius: 8px;
+            font-size: 0.7rem; cursor: pointer; transition: 0.3s;
+        }
+        .secret-trigger:hover { color: var(--accent); border-color: var(--accent); }
 
         .card {
-            background: rgba(255, 255, 255, 0.03);
-            backdrop-filter: blur(20px);
-            padding: 40px;
-            border-radius: 24px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            box-shadow: 0 20px 50px rgba(0,0,0,0.8);
-            width: 350px;
-            text-align: center;
-            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(20px);
+            padding: 40px; border-radius: 24px; border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 20px 50px rgba(0,0,0,0.8); width: 380px; text-align: center;
+            transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
 
-        /* Animation beim Modus-Wechsel */
-        .card.bump { transform: scale(1.05); }
-
-        h1 { font-weight: 800; font-size: 1.5rem; margin-bottom: 5px; letter-spacing: 2px; }
-        .sub { font-size: 0.75rem; color: #888; margin-bottom: 25px; transition: 0.3s; }
+        .bump { transform: scale(1.05); }
+        h1 { font-weight: 900; margin-bottom: 5px; letter-spacing: 2px; }
+        .sub { font-size: 0.75rem; color: #888; margin-bottom: 25px; }
 
         .btn-switch {
-            background: white;
-            color: black;
-            border: none;
-            padding: 10px 25px;
-            border-radius: 50px;
-            font-weight: 800;
-            cursor: pointer;
-            margin-bottom: 30px;
-            transition: 0.3s;
-            box-shadow: 0 4px 15px rgba(255,255,255,0.2);
+            background: white; color: black; border: none;
+            padding: 10px 25px; border-radius: 50px; font-weight: 800;
+            cursor: pointer; margin-bottom: 30px; transition: 0.3s;
         }
-
-        .btn-switch:hover { transform: translateY(-3px); box-shadow: 0 8px 20px var(--current-accent); }
-        .btn-switch:active { transform: scale(0.95); }
 
         input {
-            width: 100%;
-            background: rgba(0,0,0,0.5);
-            border: 1px solid rgba(255,255,255,0.1);
-            padding: 15px;
-            border-radius: 12px;
-            color: white;
-            margin-bottom: 15px;
-            font-size: 1rem;
-            outline: none;
-            box-sizing: border-box;
-            transition: 0.3s;
+            width: 100%; background: rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.1);
+            padding: 15px; border-radius: 12px; color: white; margin-bottom: 12px;
+            font-size: 1rem; outline: none; box-sizing: border-box;
         }
 
-        input:focus { border-color: var(--current-accent); background: rgba(0,0,0,0.7); }
+        input:focus { border-color: var(--accent); }
 
         .result-area {
-            margin-top: 20px;
-            padding: 20px;
-            background: rgba(255, 255, 255, 0.02);
-            border-radius: 15px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            margin-top: 20px; padding: 20px; background: rgba(255, 255, 255, 0.02);
+            border-radius: 15px; border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
-        #output { font-size: 1.6rem; font-weight: 800; color: var(--current-accent); margin-bottom: 10px; transition: 0.5s; }
+        #output { font-size: 1.5rem; font-weight: 800; color: var(--accent); margin-bottom: 10px; }
 
-        .btn-copy {
-            font-size: 0.7rem;
-            background: rgba(255,255,255,0.05);
-            border: 1px solid rgba(255,255,255,0.1);
-            color: #aaa;
-            padding: 8px 15px;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: 0.2s;
-        }
+        /* Secret Area Hidden by Default */
+        #secret-area { display: none; margin-top: 20px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 20px; }
+        .secret-label { font-size: 0.7rem; color: gold; margin-bottom: 10px; display: block; }
 
-        .btn-copy:hover { color: white; background: var(--current-accent); border-color: transparent; }
-
-        .footer {
-            position: absolute;
-            bottom: 20px;
-            right: 25px;
-            font-size: 0.75rem;
-            color: #555;
-            font-weight: 600;
-        }
+        .footer { position: absolute; bottom: 20px; right: 25px; font-size: 0.75rem; color: #444; }
     </style>
 </head>
 <body>
 
     <div class="glow" id="bg-glow"></div>
+    <button class="secret-trigger" onclick="unlockSecret()">Geheimer Mode</button>
 
     <div class="card" id="main-card">
         <h1>CONVERTER</h1>
@@ -130,12 +85,19 @@
         
         <button class="btn-switch" onclick="toggleMode()">MODUS ÄNDERN</button>
 
-        <input type="number" id="xIn" placeholder="X" oninput="convert()">
-        <input type="number" id="zIn" placeholder="Z" oninput="convert()">
+        <div id="standard-inputs">
+            <input type="number" id="xIn" placeholder="X" oninput="convert()">
+            <input type="number" id="zIn" placeholder="Z" oninput="convert()">
+        </div>
+
+        <div id="secret-area">
+            <span class="secret-label">✨ COMMAND PARSER ACTIVE</span>
+            <input type="text" id="cmdInput" placeholder="/tp 1304 -51 4840" oninput="parseCommand()">
+        </div>
 
         <div class="result-area">
             <div id="output">X: 0 | Z: 0</div>
-            <button class="btn-copy" onclick="copyResult()">KOPIEREN</button>
+            <button style="background:none; border:none; color:#666; cursor:pointer; font-size:0.7rem;" onclick="copyResult()">KOPIEREN</button>
         </div>
     </div>
 
@@ -144,42 +106,55 @@
     <script>
         let isOW = true;
 
+        function unlockSecret() {
+            const pw = prompt("Passwort eingeben:");
+            if(pw === "6767") {
+                document.getElementById('secret-area').style.display = 'block';
+                document.getElementById('standard-inputs').style.display = 'none';
+                alert("Geheimer Modus aktiviert!");
+            } else {
+                alert("Falsches Passwort!");
+            }
+        }
+
         function toggleMode() {
             isOW = !isOW;
-            const root = document.documentElement;
             const card = document.getElementById('main-card');
-            const label = document.getElementById('mode-label');
-
-            // Animation triggern
             card.classList.add('bump');
             setTimeout(() => card.classList.remove('bump'), 400);
 
-            // Farben und Texte ändern
-            if (isOW) {
-                root.style.setProperty('--current-accent', 'var(--nether-color)');
-                label.innerText = "OVERWORLD ➔ NETHER";
-            } else {
-                root.style.setProperty('--current-accent', 'var(--overworld-color)');
-                label.innerText = "NETHER ➔ OVERWORLD";
-            }
+            document.documentElement.style.setProperty('--accent', isOW ? 'var(--nether)' : 'var(--overworld)');
+            document.getElementById('mode-label').innerText = isOW ? "OVERWORLD ➔ NETHER" : "NETHER ➔ OVERWORLD";
             
-            convert();
+            isOW ? convert() : parseCommand();
         }
 
         function convert() {
             const x = parseFloat(document.getElementById('xIn').value) || 0;
             const z = parseFloat(document.getElementById('zIn').value) || 0;
+            updateDisplay(x, z);
+        }
+
+        function parseCommand() {
+            const val = document.getElementById('cmdInput').value;
+            // Extrahiert alle Zahlen (auch negative) aus dem String
+            const coords = val.match(/-?\d+/g);
+            if(coords && coords.length >= 2) {
+                // Minecraft TP Befehle haben oft X Y Z. Wir brauchen X (0) und Z (2 oder 1)
+                const x = parseFloat(coords[0]);
+                const z = coords.length >= 3 ? parseFloat(coords[2]) : parseFloat(coords[1]);
+                updateDisplay(x, z);
+            }
+        }
+
+        function updateDisplay(x, z) {
             let rx = isOW ? Math.floor(x / 8) : Math.floor(x * 8);
             let rz = isOW ? Math.floor(z / 8) : Math.floor(z * 8);
             document.getElementById('output').innerText = `X: ${rx} | Z: ${rz}`;
         }
 
         function copyResult() {
-            const text = document.getElementById('output').innerText;
-            navigator.clipboard.writeText(text);
-            const btn = document.querySelector('.btn-copy');
-            btn.innerText = "KOPIERT!";
-            setTimeout(() => btn.innerText = "KOPIEREN", 2000);
+            navigator.clipboard.writeText(document.getElementById('output').innerText);
         }
     </script>
 </body>
