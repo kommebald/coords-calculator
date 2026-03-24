@@ -3,8 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MC Converter | Secret Edition</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
+    <title>Minecraft Utility</title> <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
     <style>
         :root {
             --nether: #ff4d4d;
@@ -26,14 +25,12 @@
             z-index: -1; opacity: 0.25; transition: 0.8s;
         }
 
-        /* Secret Mode Button */
+        /* Fast unsichtbarer Knopf oben rechts */
         .secret-trigger {
-            position: absolute; top: 20px; right: 20px;
-            background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
-            color: #444; padding: 8px 15px; border-radius: 8px;
-            font-size: 0.7rem; cursor: pointer; transition: 0.3s;
+            position: absolute; top: 0; right: 0;
+            width: 50px; height: 50px; background: transparent;
+            border: none; cursor: default; outline: none;
         }
-        .secret-trigger:hover { color: var(--accent); border-color: var(--accent); }
 
         .card {
             background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(20px);
@@ -67,9 +64,14 @@
 
         #output { font-size: 1.5rem; font-weight: 800; color: var(--accent); margin-bottom: 10px; }
 
-        /* Secret Area Hidden by Default */
-        #secret-area { display: none; margin-top: 20px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 20px; }
-        .secret-label { font-size: 0.7rem; color: gold; margin-bottom: 10px; display: block; }
+        /* Secret Mode Styles */
+        #secret-area { display: none; }
+        .btn-back {
+            background: transparent; border: 1px solid #333; color: #555;
+            padding: 5px 10px; border-radius: 8px; font-size: 0.7rem;
+            cursor: pointer; margin-top: 10px; transition: 0.3s;
+        }
+        .btn-back:hover { border-color: white; color: white; }
 
         .footer { position: absolute; bottom: 20px; right: 25px; font-size: 0.75rem; color: #444; }
     </style>
@@ -77,7 +79,7 @@
 <body>
 
     <div class="glow" id="bg-glow"></div>
-    <button class="secret-trigger" onclick="unlockSecret()">Geheimer Mode</button>
+    <button class="secret-trigger" onclick="unlockSecret()"></button>
 
     <div class="card" id="main-card">
         <h1>CONVERTER</h1>
@@ -86,18 +88,18 @@
         <button class="btn-switch" onclick="toggleMode()">MODUS ÄNDERN</button>
 
         <div id="standard-inputs">
-            <input type="number" id="xIn" placeholder="X" oninput="convert()">
-            <input type="number" id="zIn" placeholder="Z" oninput="convert()">
+            <input type="number" id="xIn" placeholder="X-Koordinate" oninput="convert()">
+            <input type="number" id="zIn" placeholder="Z-Koordinate" oninput="convert()">
         </div>
 
         <div id="secret-area">
-            <span class="secret-label">✨ COMMAND PARSER ACTIVE</span>
             <input type="text" id="cmdInput" placeholder="/tp 1304 -51 4840" oninput="parseCommand()">
+            <button class="btn-back" onclick="closeSecret()">Zurück zum Standard</button>
         </div>
 
         <div class="result-area">
             <div id="output">X: 0 | Z: 0</div>
-            <button style="background:none; border:none; color:#666; cursor:pointer; font-size:0.7rem;" onclick="copyResult()">KOPIEREN</button>
+            <button style="background:none; border:none; color:#444; cursor:pointer; font-size:0.7rem;" onclick="copyResult()">KOPIEREN</button>
         </div>
     </div>
 
@@ -107,14 +109,16 @@
         let isOW = true;
 
         function unlockSecret() {
-            const pw = prompt("Passwort eingeben:");
+            const pw = prompt("Zugangscode erforderlich:");
             if(pw === "6767") {
                 document.getElementById('secret-area').style.display = 'block';
                 document.getElementById('standard-inputs').style.display = 'none';
-                alert("Geheimer Modus aktiviert!");
-            } else {
-                alert("Falsches Passwort!");
             }
+        }
+
+        function closeSecret() {
+            document.getElementById('secret-area').style.display = 'none';
+            document.getElementById('standard-inputs').style.display = 'block';
         }
 
         function toggleMode() {
@@ -126,7 +130,9 @@
             document.documentElement.style.setProperty('--accent', isOW ? 'var(--nether)' : 'var(--overworld)');
             document.getElementById('mode-label').innerText = isOW ? "OVERWORLD ➔ NETHER" : "NETHER ➔ OVERWORLD";
             
-            isOW ? convert() : parseCommand();
+            // Sofort neu berechnen, egal welcher Modus gerade offen ist
+            convert();
+            parseCommand();
         }
 
         function convert() {
@@ -137,10 +143,8 @@
 
         function parseCommand() {
             const val = document.getElementById('cmdInput').value;
-            // Extrahiert alle Zahlen (auch negative) aus dem String
             const coords = val.match(/-?\d+/g);
             if(coords && coords.length >= 2) {
-                // Minecraft TP Befehle haben oft X Y Z. Wir brauchen X (0) und Z (2 oder 1)
                 const x = parseFloat(coords[0]);
                 const z = coords.length >= 3 ? parseFloat(coords[2]) : parseFloat(coords[1]);
                 updateDisplay(x, z);
@@ -154,7 +158,8 @@
         }
 
         function copyResult() {
-            navigator.clipboard.writeText(document.getElementById('output').innerText);
+            const text = document.getElementById('output').innerText;
+            navigator.clipboard.writeText(text);
         }
     </script>
 </body>
